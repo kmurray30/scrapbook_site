@@ -1,0 +1,27 @@
+{
+  "name": "scrapbook-site",
+  "version": "1.0.0",
+  "description": "Social recommendation sharing platform",
+  "main": "server/server.js",
+  "scripts": {
+    "server": "node server/server.js",
+    "client": "cd client && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "cd client && npm run build",
+    "start": "node server/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "sqlite3": "^5.1.7",
+    "uuid": "^9.0.1",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
+

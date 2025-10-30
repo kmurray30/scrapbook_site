@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: scrapbook-site
+    env: node
+    buildCommand: npm install && cd client && npm install && npm run build && cd ..
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5001
+

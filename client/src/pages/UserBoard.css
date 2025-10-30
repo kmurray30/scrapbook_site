@@ -1,0 +1,155 @@
+.user-board {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.user-board-header {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  margin-bottom: 1.5rem;
+  transition: color 0.3s;
+}
+
+.btn-back:hover {
+  color: #764ba2;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.user-avatar-large {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-details h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.user-join-date {
+  color: #999;
+  font-size: 0.95rem;
+}
+
+.btn-follow-user {
+  padding: 1rem 2rem;
+  border: 2px solid #667eea;
+  background: white;
+  color: #667eea;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.btn-follow-user:hover {
+  background: #667eea;
+  color: white;
+}
+
+.btn-follow-user.following {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+}
+
+.btn-follow-user.following:hover {
+  background: #e0e0e0;
+  color: #666;
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.loading-state,
+.error-state,
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.loading-state {
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.error-state h2 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.error-state button {
+  padding: 1rem 2rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .user-profile {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

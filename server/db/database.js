@@ -47,6 +47,7 @@ function initDB() {
           deviceId TEXT UNIQUE,
           googleId TEXT UNIQUE,
           profilePic TEXT,
+          themeColor TEXT DEFAULT 'purple',
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
       `);
@@ -91,5 +92,5 @@ function initDB() {
 
 initDB().catch(console.error);
 
-module.exports = { db, dbRun, dbGet, dbAll };
+module.exports = { db, dbRun, dbGet, dbAll, initDB };
 

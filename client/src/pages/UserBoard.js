@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import CategoryFilter from '../components/CategoryFilter';
 import PostCard from '../components/PostCard';
 import { followAPI, postAPI, userAPI } from '../services/api';
 import './UserBoard.css';
@@ -11,6 +12,7 @@ function UserBoard({ currentUser }) {
   const [posts, setPosts] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -33,9 +35,14 @@ function UserBoard({ currentUser }) {
       const userPosts = await postAPI.getUserPosts(userId);
       setPosts(userPosts);
       
-      // Check follow status
-      const followStatus = await followAPI.checkFollowStatus(userId);
-      setIsFollowing(followStatus.isFollowing);
+      // Check follow status (may fail if not authenticated)
+      try {
+        const followStatus = await followAPI.checkFollowStatus(userId);
+        setIsFollowing(followStatus.isFollowing);
+      } catch (err) {
+        console.log('Note: Follow status not available (this is normal if browsing)');
+        setIsFollowing(false);
+      }
       
       setError('');
     } catch (err) {
@@ -57,8 +64,13 @@ function UserBoard({ currentUser }) {
       }
     } catch (err) {
       console.error('Failed to toggle follow:', err);
+      alert('Could not update follow status. Please make sure you\'re logged in.');
     }
   };
+
+  const filteredPosts = selectedCategory === 'All' 
+    ? posts 
+    : posts.filter(post => post.category === selectedCategory);
 
   if (isLoading) {
     return <div className="loading-state">Loading...</div>;
@@ -102,15 +114,24 @@ function UserBoard({ currentUser }) {
         </div>
       </div>
 
-      {posts.length === 0 ? (
+      <CategoryFilter 
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+      />
+
+      {filteredPosts.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon">📝</div>
-          <h3>{user.displayName} hasn't posted anything yet</h3>
+          <h3>
+            {selectedCategory === 'All' 
+              ? `${user.displayName} hasn't posted anything yet`
+              : `${user.displayName} hasn't posted any ${selectedCategory.toLowerCase()}s yet`}
+          </h3>
           <p>Check back later for their recommendations!</p>
         </div>
       ) : (
         <div className="posts-grid">
-          {posts.map(post => (
+          {filteredPosts.map(post => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>

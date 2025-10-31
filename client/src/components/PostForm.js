@@ -14,8 +14,11 @@ function PostForm({ onPostCreated, onCancel }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const wordCount = formData.content.trim().split(/\s+/).filter(w => w).length;
-  const isOverLimit = wordCount > 20;
+  const titleWordCount = formData.title.trim().split(/\s+/).filter(w => w).length;
+  const isTitleOverLimit = titleWordCount > 10;
+  
+  const contentWordCount = formData.content.trim().split(/\s+/).filter(w => w).length;
+  const isContentOverLimit = contentWordCount > 20;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +28,12 @@ function PostForm({ onPostCreated, onCancel }) {
       return;
     }
 
-    if (isOverLimit) {
+    if (isTitleOverLimit) {
+      setError('Title must be 10 words or less');
+      return;
+    }
+
+    if (isContentOverLimit) {
       setError('Content must be 20 words or less');
       return;
     }
@@ -69,7 +77,12 @@ function PostForm({ onPostCreated, onCancel }) {
           </div>
 
           <div className="form-group">
-            <label htmlFor="title">Title</label>
+            <label htmlFor="title">
+              Title
+              <span className={`word-count ${isTitleOverLimit ? 'over-limit' : ''}`}>
+                {titleWordCount}/10 words
+              </span>
+            </label>
             <input
               id="title"
               type="text"
@@ -97,8 +110,8 @@ function PostForm({ onPostCreated, onCancel }) {
           <div className="form-group">
             <label htmlFor="content">
               Your Thoughts 
-              <span className={`word-count ${isOverLimit ? 'over-limit' : ''}`}>
-                {wordCount}/20 words
+              <span className={`word-count ${isContentOverLimit ? 'over-limit' : ''}`}>
+                {contentWordCount}/20 words
               </span>
             </label>
             <textarea
@@ -117,7 +130,7 @@ function PostForm({ onPostCreated, onCancel }) {
             <button type="button" onClick={onCancel} disabled={isLoading} className="btn-cancel">
               Cancel
             </button>
-            <button type="submit" disabled={isLoading || isOverLimit} className="btn-submit">
+            <button type="submit" disabled={isLoading || isTitleOverLimit || isContentOverLimit} className="btn-submit">
               {isLoading ? 'Creating...' : 'Create Post'}
             </button>
           </div>

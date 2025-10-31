@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import CategoryFilter from '../components/CategoryFilter';
 import PostCard from '../components/PostCard';
 import PostForm from '../components/PostForm';
 import { postAPI } from '../services/api';
@@ -8,6 +9,7 @@ function YourBoard({ currentUser }) {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showPostForm, setShowPostForm] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -33,6 +35,10 @@ function YourBoard({ currentUser }) {
     setShowPostForm(false);
   };
 
+  const filteredPosts = selectedCategory === 'All' 
+    ? posts 
+    : posts.filter(post => post.category === selectedCategory);
+
   return (
     <div className="your-board">
       <div className="board-header">
@@ -47,20 +53,27 @@ function YourBoard({ currentUser }) {
 
       {error && <div className="error-banner">{error}</div>}
 
+      <CategoryFilter 
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+      />
+
       {isLoading ? (
         <div className="loading-state">Loading your posts...</div>
-      ) : posts.length === 0 ? (
+      ) : filteredPosts.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon">📝</div>
-          <h3>No posts yet</h3>
-          <p>Start sharing your favorite experiences!</p>
-          <button className="btn-empty-cta" onClick={() => setShowPostForm(true)}>
-            Create Your First Post
-          </button>
+          <h3>{selectedCategory === 'All' ? 'No posts yet' : `No ${selectedCategory.toLowerCase()} posts`}</h3>
+          <p>{selectedCategory === 'All' ? 'Start sharing your favorite experiences!' : 'Create a post in this category to see it here'}</p>
+          {selectedCategory === 'All' && (
+            <button className="btn-empty-cta" onClick={() => setShowPostForm(true)}>
+              Create Your First Post
+            </button>
+          )}
         </div>
       ) : (
         <div className="posts-grid">
-          {posts.map(post => (
+          {filteredPosts.map(post => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>

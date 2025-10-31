@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,12 +55,12 @@
 
 .welcome-form input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--theme-secondary);
 }
 
 .welcome-form button {
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -73,7 +73,7 @@
 
 .welcome-form button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
 }
 
 .welcome-form button:disabled {

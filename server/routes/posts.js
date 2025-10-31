@@ -42,9 +42,15 @@ router.post('/', authenticateDevice, async (req, res) => {
       return res.status(400).json({ error: 'Title, content, and category required' });
     }
 
-    // Validate word count (approximately 20 words = ~150 characters)
-    const wordCount = content.trim().split(/\s+/).length;
-    if (wordCount > 20) {
+    // Validate title word count (10 words max)
+    const titleWordCount = title.trim().split(/\s+/).length;
+    if (titleWordCount > 10) {
+      return res.status(400).json({ error: 'Title must be 10 words or less' });
+    }
+
+    // Validate content word count (20 words max)
+    const contentWordCount = content.trim().split(/\s+/).length;
+    if (contentWordCount > 20) {
       return res.status(400).json({ error: 'Content must be 20 words or less' });
     }
 

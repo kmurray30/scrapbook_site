@@ -1,0 +1,66 @@
+.category-filter {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.filter-label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.filter-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 25px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filter-pill:hover {
+  border-color: var(--theme-secondary);
+  color: var(--theme-secondary);
+  transform: translateY(-2px);
+}
+
+.filter-pill.active {
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
+  border-color: transparent;
+  color: white;
+}
+
+.pill-icon {
+  font-size: 1.2rem;
+}
+
+.pill-text {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .filter-pills {
+    justify-content: center;
+  }
+  
+  .filter-pill {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+

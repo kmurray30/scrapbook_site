@@ -23,7 +23,7 @@
 .nav-logo {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #667eea;
+  color: var(--theme-secondary);
   margin: 0;
 }
 
@@ -40,18 +40,38 @@
 }
 
 .nav-link:hover {
-  color: #667eea;
+  color: var(--theme-secondary);
 }
 
 .nav-user {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .user-name {
   font-weight: 500;
   color: #666;
+}
+
+.theme-selector {
+  position: relative;
+}
+
+.theme-dropdown {
+  padding: 0.5rem;
+  border: 2px solid var(--theme-secondary);
+  border-radius: 8px;
+  background: white;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.theme-dropdown:hover {
+  background: var(--theme-primary);
+  color: white;
 }
 
 .main-content {

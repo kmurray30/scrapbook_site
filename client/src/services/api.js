@@ -36,8 +36,15 @@ async function apiRequest(endpoint, options = {}) {
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Request failed');
+    let errorMessage = 'Request failed';
+    try {
+      const error = await response.json();
+      errorMessage = error.error || errorMessage;
+    } catch (e) {
+      // Response wasn't JSON, use status text
+      errorMessage = response.statusText || errorMessage;
+    }
+    throw new Error(errorMessage);
   }
 
   return response.json();
@@ -55,12 +62,33 @@ export const userAPI = {
     return user;
   },
 
+  // Auto-claim a sample user (no displayName needed)
+  async autoClaimUser() {
+    const deviceId = getDeviceId();
+    const user = await apiRequest('/users/init', {
+      method: 'POST',
+      body: JSON.stringify({ deviceId }),
+    });
+    setCurrentUser(user);
+    return user;
+  },
+
   async getUser(userId) {
     return apiRequest(`/users/${userId}`);
   },
 
   async getAllUsers() {
     return apiRequest('/users');
+  },
+
+  async updateTheme(themeColor) {
+    const deviceId = getDeviceId();
+    const user = await apiRequest('/users/theme', {
+      method: 'POST',
+      body: JSON.stringify({ deviceId, themeColor }),
+    });
+    setCurrentUser(user);
+    return user;
   },
 };
 

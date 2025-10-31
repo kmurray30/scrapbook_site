@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CategoryFilter from '../components/CategoryFilter';
 import { followAPI, postAPI, userAPI } from '../services/api';
+import { getLimitedGroupedPosts } from '../utils/dateUtils';
 import './FriendsGallery.css';
 
 const categoryIcons = {
@@ -16,6 +18,7 @@ function FriendsGallery({ currentUser }) {
   const [following, setFollowing] = useState(new Set());
   const [userPosts, setUserPosts] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,10 +33,16 @@ function FriendsGallery({ currentUser }) {
       const allUsers = await userAPI.getAllUsers();
       const otherUsers = allUsers.filter(u => u.id !== currentUser.id);
       
-      // Load following list
-      const followingList = await followAPI.getFollowing();
-      const followingIds = new Set(followingList.map(f => f.id));
-      setFollowing(followingIds);
+      // Try to load following list (may fail if user not authenticated)
+      let followingIds = new Set();
+      try {
+        const followingList = await followAPI.getFollowing();
+        followingIds = new Set(followingList.map(f => f.id));
+        setFollowing(followingIds);
+      } catch (err) {
+        // Silently continue without following data - not critical for viewing
+        console.log('Note: Following list not available (this is normal if browsing)');
+      }
       
       // Sort users: followed users first, then by creation date
       const sortedUsers = otherUsers.sort((a, b) => {
@@ -46,11 +55,11 @@ function FriendsGallery({ currentUser }) {
       
       setUsers(sortedUsers);
       
-      // Load recent posts for each user (up to 4)
+      // Load recent posts for each user
       const postsMap = {};
       for (const user of sortedUsers) {
         const posts = await postAPI.getUserPosts(user.id);
-        postsMap[user.id] = posts.slice(0, 4);
+        postsMap[user.id] = posts;
       }
       setUserPosts(postsMap);
       
@@ -78,11 +87,23 @@ function FriendsGallery({ currentUser }) {
       }
     } catch (err) {
       console.error('Failed to toggle follow:', err);
+      alert('Could not update follow status. Please make sure you\'re logged in.');
     }
   };
 
   const handleUserClick = (userId) => {
     navigate(`/user/${userId}`);
+  };
+
+  const getFilteredPosts = (posts) => {
+    if (selectedCategory === 'All') return posts;
+    return posts.filter(post => post.category === selectedCategory);
+  };
+
+  const getUserGroupedPosts = (userId) => {
+    const posts = userPosts[userId] || [];
+    const filtered = getFilteredPosts(posts);
+    return getLimitedGroupedPosts(filtered, 3, 4);
   };
 
   if (isLoading) {
@@ -96,6 +117,11 @@ function FriendsGallery({ currentUser }) {
         <p className="gallery-subtitle">Discover what your friends are loving</p>
       </div>
 
+      <CategoryFilter 
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+      />
+
       {users.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon">👥</div>
@@ -104,44 +130,61 @@ function FriendsGallery({ currentUser }) {
         </div>
       ) : (
         <div className="users-grid">
-          {users.map(user => (
-            <div 
-              key={user.id} 
-              className={`user-card ${following.has(user.id) ? 'following' : ''}`}
-              onClick={() => handleUserClick(user.id)}
-            >
-              {following.has(user.id) && <div className="following-badge">Following</div>}
-              
-              <div className="user-info">
-                <div className="user-avatar">
-                  {user.displayName.charAt(0).toUpperCase()}
-                </div>
-                <h3 className="user-name">{user.displayName}</h3>
-              </div>
+          {users.map(user => {
+            const groupedPosts = getUserGroupedPosts(user.id);
+            const hasVisiblePosts = Object.keys(groupedPosts).length > 0;
 
-              <div className="user-posts-collage">
-                {userPosts[user.id] && userPosts[user.id].length > 0 ? (
-                  userPosts[user.id].map(post => (
-                    <div key={post.id} className="collage-item">
-                      <span className="collage-icon">
-                        {categoryIcons[post.category] || '✨'}
-                      </span>
-                      <span className="collage-title">{post.title}</span>
-                    </div>
-                  ))
-                ) : (
-                  <div className="no-posts">No posts yet</div>
-                )}
-              </div>
-
-              <button 
-                className={`btn-follow ${following.has(user.id) ? 'following' : ''}`}
-                onClick={(e) => handleFollowToggle(user.id, e)}
+            return (
+              <div 
+                key={user.id} 
+                className={`user-card ${following.has(user.id) ? 'following' : ''}`}
+                onClick={() => handleUserClick(user.id)}
               >
-                {following.has(user.id) ? 'Unfollow' : 'Follow'}
-              </button>
-            </div>
-          ))}
+                {following.has(user.id) && <div className="following-badge">Following</div>}
+                
+                <div className="user-info">
+                  <div className="user-avatar">
+                    {user.displayName.charAt(0).toUpperCase()}
+                  </div>
+                  <h3 className="user-name">{user.displayName}</h3>
+                </div>
+
+                <div className="user-posts-preview">
+                  {hasVisiblePosts ? (
+                    Object.entries(groupedPosts).map(([groupName, posts]) => (
+                      <div key={groupName} className="preview-group">
+                        <div className="preview-group-header">{groupName}</div>
+                        {posts.map(post => (
+                          <div key={post.id} className="preview-item">
+                            <span className="preview-icon">
+                              {categoryIcons[post.category] || '✨'}
+                            </span>
+                            <div className="preview-content">
+                              <div className="preview-title">{post.title}</div>
+                              <div className="preview-text">{post.content}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="no-posts">
+                      {selectedCategory === 'All' 
+                        ? 'No posts yet' 
+                        : `No ${selectedCategory.toLowerCase()} posts`}
+                    </div>
+                  )}
+                </div>
+
+                <button 
+                  className={`btn-follow ${following.has(user.id) ? 'following' : ''}`}
+                  onClick={(e) => handleFollowToggle(user.id, e)}
+                >
+                  {following.has(user.id) ? 'Unfollow' : 'Follow'}
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

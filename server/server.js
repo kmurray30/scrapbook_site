@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const { seedDatabase } = require('./db/seedData');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -37,7 +38,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+  // Seed sample data after server starts
+  await seedDatabase();
 });
 

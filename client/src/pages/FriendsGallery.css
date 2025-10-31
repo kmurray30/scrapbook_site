@@ -45,14 +45,14 @@
 }
 
 .user-card.following {
-  border: 2px solid #667eea;
+  border: 2px solid var(--theme-secondary);
 }
 
 .following-badge {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
   color: white;
   padding: 0.3rem 0.8rem;
   border-radius: 15px;
@@ -71,7 +71,7 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,38 +87,79 @@
   margin: 0;
 }
 
-.user-posts-collage {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.8rem;
+.user-posts-preview {
   margin-bottom: 1.5rem;
-  min-height: 120px;
+  min-height: 180px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
-.collage-item {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-radius: 10px;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 0.5rem;
+.preview-group {
+  margin-bottom: 1rem;
 }
 
-.collage-icon {
-  font-size: 1.8rem;
+.preview-group:last-child {
+  margin-bottom: 0;
 }
 
-.collage-title {
+.preview-group-header {
   font-size: 0.75rem;
-  color: #666;
+  font-weight: 700;
+  color: var(--theme-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid var(--theme-primary);
+}
+
+.preview-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  background: #f9f9f9;
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+  transition: background 0.2s;
+}
+
+.preview-item:last-child {
+  margin-bottom: 0;
+}
+
+.preview-item:hover {
+  background: #f0f0f0;
+}
+
+.preview-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.preview-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.preview-title {
+  font-size: 0.85rem;
   font-weight: 600;
+  color: #333;
+  margin-bottom: 0.3rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 100%;
+}
+
+.preview-text {
+  font-size: 0.75rem;
+  color: #666;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .no-posts {
@@ -133,9 +174,9 @@
 .btn-follow {
   width: 100%;
   padding: 0.8rem;
-  border: 2px solid #667eea;
+  border: 2px solid var(--theme-secondary);
   background: white;
-  color: #667eea;
+  color: var(--theme-secondary);
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
@@ -143,12 +184,12 @@
 }
 
 .btn-follow:hover {
-  background: #667eea;
+  background: var(--theme-secondary);
   color: white;
 }
 
 .btn-follow.following {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
   color: white;
   border: none;
 }
